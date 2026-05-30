@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HeroQuest — Development Plan</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+
+    :root {
+      --gold:        #c9a84c;
+      --gold-light:  #e8c96a;
+      --gold-dim:    #7a6030;
+      --parchment:   #f0e6c8;
+      --parchment-dark: #d4c49a;
+      --ink:         #1a1510;
+      --charcoal:    #0e0c09;
+      --stone:       #1e1a14;
+      --stone-mid:   #2a2318;
+      --stone-light: #3a3025;
+      --fog:         #6b7fa3;
+      --fog-light:   #8fa0c0;
+      --daily:       #4caf7d;
+      --weekly:      #5b8dd9;
+      --story:       #c9a84c;
+      --fog-quest:   #8a7fa8;
+      --red:         #c0392b;
+      --text-main:   #e8dcc8;
+      --text-dim:    #9a8a70;
+      --text-faint:  #5a4e3a;
+      --border:      rgba(201,168,76,0.25);
+      --border-strong: rgba(201,168,76,0.6);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--charcoal);
+      background-image:
+        radial-gradient(ellipse at 20% 0%, rgba(201,168,76,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 100%, rgba(91,141,217,0.04) 0%, transparent 60%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.025'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      color: var(--text-main);
+      font-family: 'Crimson Text', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 32px 120px;
+    }
+
+    /* ── Decorative rule ── */
+    .rule {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 40px 0;
+      color: var(--gold-dim);
+    }
+    .rule::before, .rule::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    }
+    .rule-diamond {
+      width: 8px; height: 8px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+
+    /* ── Header ── */
+    .hero {
+      text-align: center;
+      padding: 60px 0 40px;
+      position: relative;
+    }
+    .hero-eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(42px, 8vw, 80px);
+      font-weight: 700;
+      color: var(--gold);
+      text-shadow: 0 0 60px rgba(201,168,76,0.3), 0 2px 4px rgba(0,0,0,0.8);
+      letter-spacing: 0.05em;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+    .hero-sub {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(14px, 2vw, 18px);
+      color: var(--text-dim);
+      letter-spacing: 0.15em;
+      font-weight: 400;
+    }
+    .hero-tagline {
+      margin-top: 24px;
+      font-style: italic;
+      color: var(--text-dim);
+      font-size: 18px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── Sections ── */
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-title::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 22px;
+      background: linear-gradient(180deg, var(--gold), var(--gold-dim));
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ── Stack grid ── */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+    .stack-card {
+      background: var(--stone);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .stack-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.5;
+    }
+    .stack-card:hover { border-color: var(--border-strong); }
+    .stack-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 6px;
+    }
+    .stack-value {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      color: var(--gold-light);
+      font-weight: 600;
+    }
+    .stack-note {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-top: 4px;
+      font-style: italic;
+    }
+
+    /* ── Quest type pills ── */
+    .quest-types {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+    .quest-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      border-radius: 4px;
+      border: 1px solid;
+      background: var(--stone);
+    }
+    .quest-pill-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .quest-pill-name {
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .quest-pill-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+    .daily   { border-color: rgba(76,175,125,0.4); }  .daily   .quest-pill-dot { background: var(--daily); }   .daily   .quest-pill-name { color: var(--daily); }
+    .weekly  { border-color: rgba(91,141,217,0.4); }  .weekly  .quest-pill-dot { background: var(--weekly); }  .weekly  .quest-pill-name { color: var(--weekly); }
+    .story   { border-color: rgba(201,168,76,0.4); }  .story   .quest-pill-dot { background: var(--story); }   .story   .quest-pill-name { color: var(--story); }
+    .fog     { border-color: rgba(138,127,168,0.4); } .fog     .quest-pill-dot { background: var(--fog-quest); }.fog     .quest-pill-name { color: var(--fog-quest); }
+
+    /* ── Data model ── */
+    .model-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .model-card {
+      background: var(--stone);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .model-header {
+      background: var(--stone-mid);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+    }
+    .model-fields {
+      padding: 10px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .model-field {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--text-dim);
+      display: flex;
+      gap: 8px;
+    }
+    .field-name { color: var(--text-main); font-weight: 500; }
+    .field-type { color: var(--text-faint); font-style: italic; }
+    .field-pk   { color: var(--gold-dim); font-size: 10px; align-self: center; }
+    .field-fk   { color: var(--fog-light); font-size: 10px; align-self: center; }
+
+    .model-relations {
+      margin-top: 16px;
+      margin-bottom: 48px;
+      background: var(--stone);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 20px;
+    }
+    .relation-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 12px;
+    }
+    .relation-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .relation-row {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-dim);
+    }
+    .rel-from { color: var(--gold-light); font-weight: 500; }
+    .rel-to   { color: var(--fog-light);  font-weight: 500; }
+    .rel-arrow { color: var(--text-faint); font-size: 16px; }
+    .rel-label { color: var(--text-faint); font-size: 11px; font-style: italic; }
+
+    /* ── Phase timeline ── */
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+      margin-bottom: 48px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 10px; top: 12px; bottom: 12px;
+      width: 2px;
+      background: linear-gradient(180deg, var(--gold), var(--gold-dim) 70%, transparent);
+    }
+    .phase {
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .phase-dot {
+      position: absolute;
+      left: -27px;
+      top: 16px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--gold-dim);
+      background: var(--charcoal);
+      z-index: 1;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .phase:hover .phase-dot {
+      border-color: var(--gold);
+      background: var(--stone-mid);
+    }
+    .phase-inner {
+      background: var(--stone);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .phase:hover .phase-inner { border-color: var(--border-strong); }
+    .phase-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      cursor: default;
+      gap: 16px;
+    }
+    .phase-left { display: flex; align-items: center; gap: 14px; }
+    .phase-number {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      color: var(--gold-dim);
+      letter-spacing: 0.1em;
+      flex-shrink: 0;
+      min-width: 60px;
+    }
+    .phase-name {
+      font-family: 'Cinzel', serif;
+      font-size: 16px;
+      color: var(--gold-light);
+      font-weight: 600;
+    }
+    .phase-goal {
+      font-size: 14px;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+    .phase-est {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      color: var(--text-faint);
+      white-space: nowrap;
+      flex-shrink: 0;
+      background: var(--stone-mid);
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+    .phase-body {
+      border-top: 1px solid var(--border);
+      padding: 16px 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 640px) {
+      .phase-body { grid-template-columns: 1fr; }
+    }
+    .phase-col-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 10px;
+    }
+    .phase-items {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .phase-items li {
+      font-size: 14px;
+      color: var(--text-dim);
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .phase-items li::before {
+      content: '◆';
+      color: var(--gold-dim);
+      font-size: 7px;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .learning-box {
+      background: var(--stone-mid);
+      border: 1px solid rgba(91,141,217,0.2);
+      border-left: 3px solid var(--weekly);
+      border-radius: 4px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+    .learning-box strong {
+      font-style: normal;
+      color: var(--fog-light);
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* ── Backlog ── */
+    .backlog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 10px;
+      margin-bottom: 48px;
+    }
+    .backlog-item {
+      background: var(--stone);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .backlog-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      opacity: 0.7;
+    }
+    .backlog-text strong {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      color: var(--text-main);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .backlog-text span {
+      font-size: 13px;
+      color: var(--text-faint);
+      font-style: italic;
+    }
+
+    /* ── Principles ── */
+    .principles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+    .principle {
+      background: var(--stone);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--gold-dim);
+      border-radius: 6px;
+      padding: 18px 18px;
+    }
+    .principle-num {
+      font-family: 'Cinzel', serif;
+      font-size: 28px;
+      color: var(--text-faint);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .principle-title {
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .principle-text {
+      font-size: 14px;
+      color: var(--text-dim);
+    }
+
+    /* ── Factions preview ── */
+    .factions-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 48px;
+    }
+    .faction-chip {
+      background: var(--stone);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .faction-icon { font-size: 18px; }
+    .faction-name {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      color: var(--text-main);
+    }
+    .faction-theme {
+      font-size: 12px;
+      color: var(--text-faint);
+      font-style: italic;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      color: var(--text-faint);
+      font-style: italic;
+      font-size: 15px;
+    }
+    .footer strong {
+      color: var(--gold-dim);
+      font-style: normal;
+      font-family: 'Cinzel', serif;
+    }
+
+    /* ── Under Consideration ── */
+    .consideration-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+    .consideration-item {
+      background: var(--stone);
+      border: 1px solid rgba(138,127,168,0.3);
+      border-left: 3px solid var(--fog-quest);
+      border-radius: 6px;
+      padding: 16px 18px;
+    }
+    .consideration-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .consideration-icon { font-size: 18px; opacity: 0.8; }
+    .consideration-name {
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      color: var(--fog-light);
+      font-weight: 600;
+    }
+    .consideration-status {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fog-quest);
+      opacity: 0.7;
+      margin-left: auto;
+    }
+    .consideration-text {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .consideration-note {
+      font-size: 13px;
+      color: var(--text-faint);
+      font-style: italic;
+      border-top: 1px solid rgba(138,127,168,0.15);
+      padding-top: 8px;
+      margin-top: 4px;
+    }
+
+    /* ── Callout ── */
+    .callout {
+      background: var(--stone);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+      border-radius: 4px;
+      padding: 14px 18px;
+      margin-bottom: 32px;
+      font-size: 15px;
+      color: var(--text-dim);
+    }
+    .callout strong { color: var(--gold-light); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Development Plan · v1.3 · May 2026</div>
+    <h1>HeroQuest</h1>
+    <div class="hero-sub">A Quest Log for the Real World</div>
+    <p class="hero-tagline">Track your journey. Earn your legend. Leave nothing in the fog.</p>
+  </div>
+
+  <div class="rule"><div class="rule-diamond"></div></div>
+
+  <!-- STACK -->
+  <div class="section-title">The Forge — Tech Stack</div>
+  <div class="stack-grid">
+    <div class="stack-card">
+      <div class="stack-label">Framework</div>
+      <div class="stack-value">Next.js 14+</div>
+      <div class="stack-note">App Router · TypeScript</div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-label">UI Library</div>
+      <div class="stack-value">MUI v5</div>
+      <div class="stack-note">Custom theme · Shared components</div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-label">Backend &amp; Database</div>
+      <div class="stack-value">Supabase</div>
+      <div class="stack-note">Auth · PostgreSQL · Real-time</div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-label">Hosting</div>
+      <div class="stack-value">Vercel</div>
+      <div class="stack-note">Zero-config · Preview deploys</div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-label">Aesthetic</div>
+      <div class="stack-value">Skyrim-inspired</div>
+      <div class="stack-note">Gold · Parchment · Stone · Dark</div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-label">Mobile (Future)</div>
+      <div class="stack-value">React Native</div>
+      <div class="stack-note">Same Supabase backend · Phase 7+</div>
+    </div>
+  </div>
+
+  <div class="rule"><div class="rule-diamond"></div></div>
+
+  <!-- QUEST TYPES -->
+  <div class="section-title">The Four Quest Scrolls</div>
+  <div class="quest-types">
+    <div class="quest-pill daily">
+      <div class="quest-pill-dot"></div>
+      <div>
+        <div class="quest-pill-name">Daily</div>
+        <div class="quest-pill-desc">Resets each midnight · Streak-tracked</div>
+      </div>
+    </div>
+    <div class="quest-pill weekly">
+      <div class="quest-pill-dot"></div>
+      <div>
+        <div class="quest-pill-name">Weekly</div>
+        <div class="quest-pill-desc">Resets each Monday · Multi-step progress</div>
+      </div>
+    </div>
+    <div class="quest-pill story">
+      <div class="quest-pill-dot"></div>
+      <div>
+        <div class="quest-pill-name">Story / Major</div>
+        <div class="quest-pill-desc">Admin-authored · Checklist · Long-arc goals</div>
+      </div>
+    </div>
+    <div class="quest-pill fog">
+      <div class="quest-pill-dot"></div>
+      <div>
+        <div class="quest-pill-name">Fog</div>
+        <div class="quest-pill-desc">Frictionless capture · The things we avoid</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule"><div class="rule-diamond"></div></div>
+
+  <!-- DATA MODEL -->
+  <div class="section-title">The Codex — Data Models</div>
+  <div class="model-grid">
+    <div class="model-card">
+      <div class="model-header">⚔ User</div>
+      <div class="model-fields">
+        <div class="model-field"><span class="field-name">id</span><span class="field-type">uuid</span><span class="field-pk">PK</span></div>
+        <div class="model-field"><span class="field-name">display_name</span><span class="field-type">text</span></div>
+        <div class="model-field"><span class="field-name">avatar_url</span><span class="field-type">text</span></div>
+        <div class="model-field"><span class="field-name">xp</span><span class="field-type">integer</span></div>
+        <div class="model-field"><span class="field-name">level</span><span class="field-type">integer</span></div>
+        <div class="model-field"><span class="field-name">streak_days</span><span class="field-type">integer</span></div>
+        <div class="model-field"><span class="field-name">created_at</span><span class="field-type">timestamp</span></div>
+      </div>
+    </div>
+    <div class="model-card">
+      <div class="model-header">🛡 Faction</div>
+      <div class="model-fields">
+        <div class="model-field"><span class="field-name">id</span><span class="field-type">uuid</span><span class="field-pk">PK</span></div>
+        <div class="model-field"><span class="field-name">name</span><span class="field-type">text</span></div>
+        <div class="model-field"><span class="field-name">slug</span><span class="field-type">text</span></div>
+        <div class="model-field"><span class="field-name">lore</span><span class="field-type">text</span></div>
+        <div class="model-field"><span class="field-name">mascot_url</span><span class="field-type">text</span></div>
+        <div class="model-field"><span class="field-name">colour</span><span class="field-type">text</span></div>
+        <div class="model-field"><span class="field-name">icon</span><span class="field-type">text</span></div>
+      </div>
+    </div>
+    <div class="model-card">
+      <div class="model-header">📜 Quest</div>
+      <div class="model-fields">
+        <div class="model-field"><span class="field-name">id</span><span class="field-type">uuid</span><span class="field-pk">PK</span></div>
+        <div class="model-field"><span class="field-name">title</span><span class="field-type">text</span></div>
+        <div class="model-field"><span class="field-name">description</span><span class="field-type">text</span></div>
+        <div class="model-field"><span class="field-name">type</span><span class="field-type">enum</span></div>
+        <div class="model-field"><span class="field-name">faction_id</span><span class="field-type">uuid</span><span class="field-fk">FK</span></div>
+        <div class="model-field"><span class="field-name">xp_reward</span><span class="field-type">integer</span></div>
+        <div class="model-field"><span class="field-name">difficulty</span><span class="field-type">enum</span></div>
+        <div class="model-field"><span class="field-name">created_by</span><span class="field-type">uuid</span><span class="field-fk">FK</span></div>
+      </div>
+    </div>
+    <div class="model-card">
+      <div class="model-header">✅ UserQuest</div>
+      <div class="model-fields">
+        <div class="model-field"><span class="field-name">id</span><span class="field-type">uuid</span><span class="field-pk">PK</span></div>
+        <div class="model-field"><span class="field-name">user_id</span><span class="field-type">uuid</span><span class="field-fk">FK</span></div>
+        <div class="model-field"><span class="field-name">quest_id</span><span class="field-type">uuid</span><span class="field-fk">FK</span></div>
+        <div class="model-field"><span class="field-name">status</span><span class="field-type">enum</span></div>
+        <div class="model-field"><span class="field-name">completed_at</span><span class="field-type">timestamp</span></div>
+        <div class="model-field"><span class="field-name">reset_at</span><span class="field-type">timestamp</span></div>
+      </div>
+    </div>
+    <div class="model-card">
+      <div class="model-header">📖 StoryQuestStep</div>
+      <div class="model-fields">
+        <div class="model-field"><span class="field-name">id</span><span class="field-type">uuid</span><span class="field-pk">PK</span></div>
+        <div class="model-field"><span class="field-name">quest_id</span><span class="field-type">uuid</span><span class="field-fk">FK</span></div>
+        <div class="model-field"><span class="field-name">title</span><span class="field-type">text</span></div>
+        <div class="model-field"><span class="field-name">order</span><span class="field-type">integer</span></div>
+        <div class="model-field"><span class="field-name">description</span><span class="field-type">text</span></div>
+      </div>
+    </div>
+    <div class="model-card">
+      <div class="model-header">⭐ UserFactionRep</div>
+      <div class="model-fields">
+        <div class="model-field"><span class="field-name">id</span><span class="field-type">uuid</span><span class="field-pk">PK</span></div>
+        <div class="model-field"><span class="field-name">user_id</span><span class="field-type">uuid</span><span class="field-fk">FK</span></div>
+        <div class="model-field"><span class="field-name">faction_id</span><span class="field-type">uuid</span><span class="field-fk">FK</span></div>
+        <div class="model-field"><span class="field-name">xp</span><span class="field-type">integer</span></div>
+        <div class="model-field"><span class="field-name">rank</span><span class="field-type">text</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="model-relations">
+    <div class="relation-title">Key Relationships</div>
+    <div class="relation-list">
+      <div class="relation-row"><span class="rel-from">User</span><span class="rel-arrow">→</span><span class="rel-to">UserQuest</span><span class="rel-arrow">→</span><span class="rel-to">Quest</span><span class="rel-label">— a user tracks many quests</span></div>
+      <div class="relation-row"><span class="rel-from">Quest</span><span class="rel-arrow">→</span><span class="rel-to">Faction</span><span class="rel-label">— each quest optionally belongs to one faction</span></div>
+      <div class="relation-row"><span class="rel-from">Quest</span><span class="rel-arrow">→</span><span class="rel-to">StoryQuestStep</span><span class="rel-label">— story quests have ordered checklist steps</span></div>
+      <div class="relation-row"><span class="rel-from">User</span><span class="rel-arrow">→</span><span class="rel-to">UserFactionRep</span><span class="rel-arrow">→</span><span class="rel-to">Faction</span><span class="rel-label">— reputation tracked per user per faction</span></div>
+    </div>
+  </div>
+
+  <div class="rule"><div class="rule-diamond"></div></div>
+
+  <!-- FACTIONS -->
+  <div class="section-title">The Guilds — Faction Concepts</div>
+  <div class="callout">
+    Featured guilds are <strong>admin-defined</strong> with full personality — mascots, lore, unique colour identity. A future phase may introduce simplified custom guilds for users.
+  </div>
+  <div class="factions-row">
+    <div class="faction-chip"><span class="faction-icon">⚔️</span><span class="faction-name">Fighters Guild</span><span class="faction-theme">— Exercise &amp; Health · Leader: Corbin Guster Hammerfist</span></div>
+    <div class="faction-chip"><span class="faction-icon">🔮</span><span class="faction-name">Mages Guild</span><span class="faction-theme">— Learning &amp; Study</span></div>
+    <div class="faction-chip"><span class="faction-icon">🏛️</span><span class="faction-name">The Court</span><span class="faction-theme">— Social &amp; Politics</span></div>
+    <div class="faction-chip"><span class="faction-icon">💼</span><span class="faction-name">Merchants League</span><span class="faction-theme">— Career &amp; Finance</span></div>
+    <div class="faction-chip"><span class="faction-icon">🌿</span><span class="faction-name">The Wanderers</span><span class="faction-theme">— Hobbies &amp; Exploration</span></div>
+    <div class="faction-chip"><span class="faction-icon">🕊️</span><span class="faction-name">The Conclave</span><span class="faction-theme">— Mindfulness &amp; Rest</span></div>
+    <div class="faction-chip"><span class="faction-icon">🏠</span><span class="faction-name">The Hearthkeepers</span><span class="faction-theme">— Home &amp; Errands</span></div>
+    <div class="faction-chip"><span class="faction-icon">🎭</span><span class="faction-name">The Bards</span><span class="faction-theme">— Creative &amp; Media</span></div>
+  </div>
+
+  <div class="rule"><div class="rule-diamond"></div></div>
+
+  <!-- PHASES -->
+  <div class="section-title">The Road Ahead — Development Phases</div>
+
+  <div class="timeline">
+
+    <!-- Phase 0 -->
+    <div class="phase">
+      <div class="phase-dot"></div>
+      <div class="phase-inner">
+        <div class="phase-header">
+          <div class="phase-left">
+            <div class="phase-number">PHASE 0</div>
+            <div>
+              <div class="phase-name">Project Skeleton</div>
+              <div class="phase-goal">A running app you can open in a browser with nothing broken</div>
+            </div>
+          </div>
+          <div class="phase-est">1–2 sessions</div>
+        </div>
+        <div class="phase-body">
+          <div>
+            <div class="phase-col-title">Deliverables</div>
+            <ul class="phase-items">
+              <li>Next.js + TypeScript + App Router initialised</li>
+              <li>MUI installed with custom Skyrim-inspired theme</li>
+              <li>MUI theme provider configured for App Router</li>
+              <li>Supabase project connected, env vars set</li>
+              <li>GitHub repo + Vercel auto-deploy pipeline live</li>
+            </ul>
+          </div>
+          <div>
+            <div class="phase-col-title">Learning Outcome</div>
+            <div class="learning-box">
+              <strong>You will understand</strong>
+              Next.js App Router project structure, the <code>app/</code> directory, root layout, and how MUI theming works at the provider level.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 1 -->
+    <div class="phase">
+      <div class="phase-dot"></div>
+      <div class="phase-inner">
+        <div class="phase-header">
+          <div class="phase-left">
+            <div class="phase-number">PHASE 1</div>
+            <div>
+              <div class="phase-name">Auth &amp; User Shell</div>
+              <div class="phase-goal">A user can sign up, log in, and see a personalised shell — guests can browse without an account</div>
+            </div>
+          </div>
+          <div class="phase-est">2–3 sessions</div>
+        </div>
+        <div class="phase-body">
+          <div>
+            <div class="phase-col-title">Deliverables</div>
+            <ul class="phase-items">
+              <li>Email/password sign-up and login via Supabase Auth</li>
+              <li>Guest mode (read-only) — factions, quest board, and story quests are publicly browsable without an account</li>
+              <li>Auth middleware — selectively protects personal routes only (profile, check-in, quest completion)</li>
+              <li>Persistent sign-in prompt for guests on interactive actions ("Sign in to track this quest")</li>
+              <li>User profile auto-created on first sign-in</li>
+              <li>Persistent app layout: nav, sidebar, content area</li>
+              <li>Placeholder user panel: avatar, level badge, XP bar (collapsed/login prompt for guests)</li>
+              <li>Sign out</li>
+            </ul>
+          </div>
+          <div>
+            <div class="phase-col-title">Learning Outcome</div>
+            <div class="learning-box">
+              <strong>You will understand</strong>
+              Next.js middleware and selective route protection, Supabase Auth, the Server vs Client component distinction in a real auth context, and how to conditionally render UI based on session state.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 2 -->
+    <div class="phase">
+      <div class="phase-dot"></div>
+      <div class="phase-inner">
+        <div class="phase-header">
+          <div class="phase-left">
+            <div class="phase-number">PHASE 2</div>
+            <div>
+              <div class="phase-name">Quest Log Core</div>
+              <div class="phase-goal">A user can create, view, and complete quests — the app feels usable</div>
+            </div>
+          </div>
+          <div class="phase-est">3–4 sessions</div>
+        </div>
+        <div class="phase-body">
+          <div>
+            <div class="phase-col-title">Deliverables</div>
+            <ul class="phase-items">
+              <li>Quest creation form — title, type, description, faction</li>
+              <li>Quest list views per type, filterable</li>
+              <li>QuestCard — the core repeating UI unit, game-styled</li>
+              <li>Mark complete — XP gain, visual feedback</li>
+              <li>Fog quest quick-add (minimal friction, title only)</li>
+              <li>Lore-flavoured empty states per quest type</li>
+              <li>Basic XP accumulation saved to Supabase</li>
+            </ul>
+          </div>
+          <div>
+            <div class="phase-col-title">Learning Outcome</div>
+            <div class="learning-box">
+              <strong>You will understand</strong>
+              Supabase CRUD, Next.js Server Actions for form submissions, component composition with MUI, and reusable component patterns.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 3 -->
+    <div class="phase">
+      <div class="phase-dot"></div>
+      <div class="phase-inner">
+        <div class="phase-header">
+          <div class="phase-left">
+            <div class="phase-number">PHASE 3</div>
+            <div>
+              <div class="phase-name">Factions</div>
+              <div class="phase-goal">Factions feel alive and quests belong somewhere</div>
+            </div>
+          </div>
+          <div class="phase-est">2–3 sessions</div>
+        </div>
+        <div class="phase-body">
+          <div>
+            <div class="phase-col-title">Deliverables</div>
+            <ul class="phase-items">
+              <li>Faction data seeded into Supabase (with named leaders — e.g. Corbin Guster Hammerfist)</li>
+              <li>Faction pages with lore, mascot, colour identity, leader character</li>
+              <li>Faction filtering on the quest log</li>
+              <li>Reputation system — XP per guild grows with completions</li>
+              <li>Rank titles (Apprentice → Journeyman → Master)</li>
+              <li>Faction colour bleeding into quest cards</li>
+              <li>Faction leader mood system — sidebar badge when quests neglected too long</li>
+            </ul>
+          </div>
+          <div>
+            <div class="phase-col-title">Learning Outcome</div>
+            <div class="learning-box">
+              <strong>You will understand</strong>
+              Relational data in Supabase, dynamic routing in App Router (<code>app/factions/[slug]/page.tsx</code>), and contextual theming.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 4 -->
+    <div class="phase">
+      <div class="phase-dot"></div>
+      <div class="phase-inner">
+        <div class="phase-header">
+          <div class="phase-left">
+            <div class="phase-number">PHASE 4</div>
+            <div>
+              <div class="phase-name">Story Quests &amp; Admin</div>
+              <div class="phase-goal">Rich multi-step quests authored by you, experienced by users</div>
+            </div>
+          </div>
+          <div class="phase-est">2–3 sessions</div>
+        </div>
+        <div class="phase-body">
+          <div>
+            <div class="phase-col-title">Deliverables</div>
+            <ul class="phase-items">
+              <li>Story quest detail page — checklist, progress bar, lore</li>
+              <li>Step completion tracked per user in Supabase</li>
+              <li>Admin route (your account only) for authoring quests</li>
+              <li>Quest Board view — available / in-progress / completed</li>
+              <li>Story quest cards visually elevated vs dailies</li>
+              <li>Random Quest Board — admin-curated pool of optional one-off quests ("learn a pen spinning trick", "text someone you haven't spoken to in a while")</li>
+              <li>Shuffle/deal mechanic — surface a random quest to the user on demand</li>
+            </ul>
+          </div>
+          <div>
+            <div class="phase-col-title">Learning Outcome</div>
+            <div class="learning-box">
+              <strong>You will understand</strong>
+              Nested routing, role-based access with Supabase Row Level Security (RLS), more complex relational queries, and random/weighted data selection patterns.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 5 -->
+    <div class="phase">
+      <div class="phase-dot"></div>
+      <div class="phase-inner">
+        <div class="phase-header">
+          <div class="phase-left">
+            <div class="phase-number">PHASE 5</div>
+            <div>
+              <div class="phase-name">Gamification Layer</div>
+              <div class="phase-goal">The rewards feel real enough to care about</div>
+            </div>
+          </div>
+          <div class="phase-est">2–3 sessions</div>
+        </div>
+        <div class="phase-body">
+          <div>
+            <div class="phase-col-title">Deliverables</div>
+            <ul class="phase-items">
+              <li>XP thresholds, level-up animation &amp; notification</li>
+              <li>Daily/weekly reset logic (midnight / Monday)</li>
+              <li>Streak tracking + streak freezes (max 2, replenishable via currency)</li>
+              <li>Daily Check-in — Fog prompt, reflection questions, optional streak-required dailies</li>
+              <li>Achievement scaffolding — define, detect, award</li>
+              <li>Quest difficulty tiers affecting XP reward</li>
+              <li>In-game reward shop — spend currency on UI themes, streak freezes, cosmetics</li>
+              <li>Full profile page — level, rep, streak, history</li>
+            </ul>
+          </div>
+          <div>
+            <div class="phase-col-title">Learning Outcome</div>
+            <div class="learning-box">
+              <strong>You will understand</strong>
+              Cron jobs via Supabase Edge Functions or Vercel Cron, complex state management, and notification patterns.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 6 -->
+    <div class="phase">
+      <div class="phase-dot"></div>
+      <div class="phase-inner">
+        <div class="phase-header">
+          <div class="phase-left">
+            <div class="phase-number">PHASE 6</div>
+            <div>
+              <div class="phase-name">Polish &amp; Feel</div>
+              <div class="phase-goal">It feels like a game, not a to-do list in costume</div>
+            </div>
+          </div>
+          <div class="phase-est">Ongoing</div>
+        </div>
+        <div class="phase-body">
+          <div>
+            <div class="phase-col-title">Deliverables</div>
+            <ul class="phase-items">
+              <li>Page transition &amp; completion animations</li>
+              <li>Sound design (optional — completion, level-up)</li>
+              <li>Skyrim typography, iconography, decorative borders</li>
+              <li>Day/night mode (lore-flavoured dark/light)</li>
+              <li>Styled loading skeletons</li>
+              <li>Error &amp; empty states written in lore voice</li>
+            </ul>
+          </div>
+          <div>
+            <div class="phase-col-title">Learning Outcome</div>
+            <div class="learning-box">
+              <strong>You will understand</strong>
+              Animation libraries (Framer Motion), theming depth, accessibility considerations, and the craft of cohesive UI voice.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /timeline -->
+
+  <div class="rule"><div class="rule-diamond"></div></div>
+
+  <!-- BACKLOG -->
+  <div class="section-title">The Fog — Later Phase Backlog</div>
+  <div class="backlog-grid">
+    <div class="backlog-item">
+      <div class="backlog-icon">📱</div>
+      <div class="backlog-text">
+        <strong>React Native App</strong>
+        <span>Mobile client — same Supabase backend, cross-device sync</span>
+      </div>
+    </div>
+    <div class="backlog-item">
+      <div class="backlog-icon">📚</div>
+      <div class="backlog-text">
+        <strong>Watchlists &amp; Reading Lists</strong>
+        <span>Companion feature or new quest type</span>
+      </div>
+    </div>
+    <div class="backlog-item">
+      <div class="backlog-icon">🏰</div>
+      <div class="backlog-text">
+        <strong>Custom Factions</strong>
+        <span>User-created guilds, simplified tier</span>
+      </div>
+    </div>
+    <div class="backlog-item">
+      <div class="backlog-icon">📖</div>
+      <div class="backlog-text">
+        <strong>User Story Quests</strong>
+        <span>Players author and optionally share quest lines</span>
+      </div>
+    </div>
+    <div class="backlog-item">
+      <div class="backlog-icon">👥</div>
+      <div class="backlog-text">
+        <strong>Social Features</strong>
+        <span>Share progress, compare faction standings with friends</span>
+      </div>
+    </div>
+    <div class="backlog-item">
+      <div class="backlog-icon">🔔</div>
+      <div class="backlog-text">
+        <strong>Push Notifications</strong>
+        <span>Web first, then mobile — daily reminders, streak alerts</span>
+      </div>
+    </div>
+    <div class="backlog-item">
+      <div class="backlog-icon">⚔️</div>
+      <div class="backlog-text">
+        <strong>Clans</strong>
+        <span>User-created social groups. Can affiliate with guilds. Shared XP bar or team goals.</span>
+      </div>
+    </div>
+    <div class="backlog-item">
+      <div class="backlog-icon">📝</div>
+      <div class="backlog-text">
+        <strong>Notes Feature</strong>
+        <span>Detached from game systems. Plain notes and tasks alongside quests — no XP, no pressure.</span>
+      </div>
+    </div>
+    <div class="backlog-item">
+      <div class="backlog-icon">🎨</div>
+      <div class="backlog-text">
+        <strong>Avatar &amp; Cosmetics</strong>
+        <span>Avatar customisation, guild banners, icons — earnable or purchasable via in-game currency.</span>
+      </div>
+    </div>
+    <div class="backlog-item">
+      <div class="backlog-icon">🐾</div>
+      <div class="backlog-text">
+        <strong>Companion / Mascot</strong>
+        <span>Early concept. Could tie into faction leaders or be a personal companion. Needs more design thinking.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule"><div class="rule-diamond"></div></div>
+
+  <!-- UNDER CONSIDERATION -->
+  <div class="section-title">The Oracle — Ideas Under Consideration</div>
+  <div class="callout">
+    These ideas have real promise but need more design thinking before they can be committed to a phase. They are recorded here so they are not lost to the fog.
+  </div>
+  <div class="consideration-grid">
+
+    <div class="consideration-item">
+      <div class="consideration-header">
+        <span class="consideration-icon">🗺️</span>
+        <span class="consideration-name">Paths</span>
+        <span class="consideration-status">Needs Design</span>
+      </div>
+      <div class="consideration-text">
+        Users naturally progress through themed "Paths" based on their faction reputation — no choice required. Example: reach Level 2 with the Fighters Guild and Level 3 with the Conclave to follow the <em>Monk's Path</em>. Paths could unlock cosmetics, titles, or unique quest lines.
+      </div>
+      <div class="consideration-note">
+        Open questions: how many paths? Are they visible to the user before unlocked? Do they branch? Does path progress surface meaningfully in the UI or is it a background reward?
+      </div>
+    </div>
+
+    <div class="consideration-item">
+      <div class="consideration-header">
+        <span class="consideration-icon">🃏</span>
+        <span class="consideration-name">Community Quest Contributions</span>
+        <span class="consideration-status">Needs Design</span>
+      </div>
+      <div class="consideration-text">
+        Allow users to submit their own entries to the Random Quest Board — either freely or via a moderation queue.
+      </div>
+      <div class="consideration-note">
+        Depends on social features. Needs a moderation strategy.
+      </div>
+    </div>
+
+    <div class="consideration-item">
+      <div class="consideration-header">
+        <span class="consideration-icon">💬</span>
+        <span class="consideration-name">Faction Leader Dialogue</span>
+        <span class="consideration-status">Needs Design</span>
+      </div>
+      <div class="consideration-text">
+        Leaders comment on your progress or neglect — extends the mood/badge system into something more narrative.
+      </div>
+      <div class="consideration-note">
+        Could use pre-written dialogue lines triggered by reputation thresholds.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="rule"><div class="rule-diamond"></div></div>
+
+  <!-- MOBILE NOTES -->
+  <div class="section-title">The Horizon — Mobile Migration Notes</div>
+  <div class="callout">
+    Nothing to build yet. These are things to keep in mind as the web app is developed so the eventual React Native migration is smooth.
+  </div>
+  <div class="backlog-grid">
+    <div class="backlog-item">
+      <div class="backlog-icon">🔔</div>
+      <div class="backlog-text">
+        <strong>Push Notifications</strong>
+        <span>Supabase Edge Functions trigger FCM/APNs. Plan backend triggers now even if mobile is far off.</span>
+      </div>
+    </div>
+    <div class="backlog-item">
+      <div class="backlog-icon">🔗</div>
+      <div class="backlog-text">
+        <strong>Deep Linking</strong>
+        <span>Plan URL scheme early (heroquest://quest/123) so notification taps open the right screen.</span>
+      </div>
+    </div>
+    <div class="backlog-item">
+      <div class="backlog-icon">📦</div>
+      <div class="backlog-text">
+        <strong>Shared Code</strong>
+        <span>Keep business logic in pure .ts files — directly reusable in React Native without changes.</span>
+      </div>
+    </div>
+    <div class="backlog-item">
+      <div class="backlog-icon">🟦</div>
+      <div class="backlog-text">
+        <strong>Widgets</strong>
+        <span>iOS WidgetKit / Android App Widgets are native-only. Late-stage feature — don't design around them yet.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule"><div class="rule-diamond"></div></div>
+
+  <!-- PRINCIPLES -->
+  <div class="section-title">The Creed — Guiding Principles</div>
+  <div class="principles">
+    <div class="principle">
+      <div class="principle-num">01</div>
+      <div class="principle-title">Frontend First</div>
+      <div class="principle-text">If a feature needs fake data to exist in the UI, that's fine. Wire it to the real backend once the component is solid.</div>
+    </div>
+    <div class="principle">
+      <div class="principle-num">02</div>
+      <div class="principle-title">Theme as Infrastructure</div>
+      <div class="principle-text">Every colour, spacing, and font decision lives in the MUI theme file — never hardcoded in a component.</div>
+    </div>
+    <div class="principle">
+      <div class="principle-num">03</div>
+      <div class="principle-title">Shared Components Early</div>
+      <div class="principle-text">QuestCard, FactionBadge, XPBar — built once, reused everywhere. This is how we make the UI easy to retheme later.</div>
+    </div>
+    <div class="principle">
+      <div class="principle-num">04</div>
+      <div class="principle-title">Nothing is a Black Box</div>
+      <div class="principle-text">We move at a pace where you understand every line. If something is introduced, it is explained.</div>
+    </div>
+  </div>
+
+  <div class="rule"><div class="rule-diamond"></div></div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p><strong>HeroQuest</strong> — Development Plan · v1.1 · Updated May 2026</p>
+    <p style="margin-top:8px; font-size:13px;">Phase 0 complete. The legend has begun.</p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+/*
+ * globals.css — keep this minimal.
+ *
+ * MUI's CssBaseline (applied in ThemeRegistry) handles:
+ *   - box-sizing reset
+ *   - margin/padding reset
+ *   - font smoothing
+ *   - body background + text colour (from our theme)
+ *
+ * Only put things here that MUI genuinely cannot handle,
+ * e.g. CSS custom properties for font variables, scrollbar styling.
+ */
+
+/* Expose the Next.js font variables globally so MUI theme font stacks work */
+:root {
+  --font-cinzel: var(--font-cinzel);
+  --font-crimson-text: var(--font-crimson-text);
+}
+
+/* Remove the native up/down spinner arrows on number inputs — they clash
+   with the themed UI. The fields still accept numeric input and respect
+   min/max; only the visual steppers are hidden. */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Thin gold-tinted scrollbar — a small but impactful aesthetic touch */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0e0c09;
+}
+::-webkit-scrollbar-thumb {
+  background: #3a3025;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #7a6030;
+}
